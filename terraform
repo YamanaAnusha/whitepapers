@@ -1,0 +1,110 @@
+Environment Provisioning tools and their trends:
+To achieve faster application delivery, the right tools must be used in DevOps environments. There is no single tool that fits all your needs such as server provisioning, configuration management, automated builds, code deployments, and monitoring.
+	 
+What is the “environment”
+The application environment consists in 3 main areas:
+•	Infrastructure
+•	Configuration
+•	Dependencies
+Infrastructure is the most important element of the environment, as it defines where the application will run, the specific configuration needs and how dependencies need to interact with the application.
+Configuration is the next most important aspect of the application environment. Configuration dictates both how the application behaves in a given infrastructure and how the infrastructure behaves in relation to the underlying application.
+Dependencies are all the different modules or systems an application dependes on, from libraries to services or other applications.
+DevOps Tools for Infrastructure Automation
+There are many tools available for infrastructure automation. We have listed a few great tools below which come under various categories like configuration management, orchestration, continuous integration, monitoring, etc
+We have categorized the tools into the following
+1. Infrastructure as a code
+2. Continuous integration/deployment
+3. Config/Secret management
+4. Monitoring
+Infrastructure as Code
+Infrastructure as Code (IaC) is the management of infrastructure (networks, virtual machines, load balancers, and connection topology) in a descriptive model.
+The popular tools for environment provisioning are listed below:
+1.Terraform:
+Terraform is an Infra provisioning tool which is cloud-agnostic. It is created by Hashicorp and written in Go. It supports all public and private cloud infrastructure provisioning. Unlike other configuration management tools, terraform does a great job in maintaining the state of your infrastructure using a concept called state files. You can get all the community terraform modules from terraform registry.
+ 
+2. Ansible:
+Ansible is agent-less configuration management as well as an orchestration tool. In Ansible, the configuration modules are called “Playbooks”.  Playbooks are written in YAML format and it is relatively easy to write when compared to other configuration management tools. Like other tools, Ansible can be used for cloud provisioning. You can find all community playbooks from Ansible Galaxy.
+3. Chef:
+Chef is a ruby based configuration management tool. Chef has the concept of cookbooks where you code your infrastructure in DSL (domain-specific language) and with a little bit of programming. Chef provisions virtual machines and configures them according to the rules mentioned in the cookbooks.
+An agent would be running on all the servers which have to be configured. The agent will pull the cookbooks from the chef master server and runs those configurations on the server to reach its desired state. You can find all the community cookbook from Chef Supermarket
+4. Puppet:
+Puppet is also a ruby based configuration management tool like chef. Puppet runs a puppet agent on all servers to be configured and it pulls the compiled module from the puppet server and installs required software packages specified in the module. You can find all community Puppet Modules from Puppetforge
+5.Saltstack:
+Saltstack is a python based opens configuration management tool. Unlike chef and puppet, Saltstack supports remote execution of commands. Normally in chef and puppet, the code for configuration will be pulled from the server while, in Saltstack, the code can be pushed to many nodes simultaneously. The compilation of code and configuration is very fast in Saltstack.
+ 
+Terraform:
+Terraform is used to create, manage, and update infrastructure resources such as physical machines, VMs, network switches, containers, and more. Almost any infrastructure type can be represented as a resource in Terraform.
+Resource Syntax:
+              resource "aws_instance" "web" {
+        ami           = "ami-a1b2c3d4"
+      instance_type = "t2.micro"
+}
+Provider:
+A provider is responsible for understanding API interactions and exposing resources. Providers generally are an IaaS (e.g. Alibaba Cloud, AWS, GCP, Microsoft Azure, OpenStack), PaaS (e.g. Heroku), or SaaS services (e.g. Terraform Cloud, DNSimple, Cloudflare).
+ 
+AWS provider syntax
+provider "aws" {
+  		region     = "us-west-2"
+  		access_key = "my-access-key"
+  		secret_key = "my-secret-key"
+}
+Provisioning in terraform:
+Terraform not only helps us in infrastructure creation and management but also in provisioning them during resource creation or deletion. It uses a feature named provisioner for the same. Provisioners are used for executing scripts or shell commands on a local or remote machine as part of resource creation/deletion.
+Example script for provisioning:
+	provisioner "remote-exec" {
+   	       inline = [ "sudo amazon-linux-extras enable nginx1.12",
+     		         "sudo yum -y install nginx",  "sudo systemctl start nginx" ]
+           }
+Variables:
+Input variables serve as parameters for a Terraform module, allowing aspects of the module to be customized without altering the module's own source code, and allowing modules to be shared between different configurations.
+When you declare variables in the root module of your configuration, you can set their values using CLI options and environment variables. 
+variable "image_id" {
+  type = string
+}
+Within the module that declared a variable, its value can be accessed from within expression as var.<name>
+resource "aws_instance" "example" {
+        instance_type = "t2.micro"
+        ami     = var.image_id
+}
+Common commands used in terraform:
+    apply :     Builds or changes infrastructure
+    destroy:   Destroy Terraform-managed infrastructure
+    get :         Download and install modules for the configuration
+    import :    Import existing infrastructure into Terraform
+    init :         Initialize a new or existing Terraform configuration
+      plan :      Generate and show an execution plan
+    push :      Upload this Terraform module to Terraform Enterprise to run
+    validate:     Validates the Terraform files
+
+ 
+    
+output values:
+Output values are like the return values of a Terraform module
+Local values:
+A local value assigns a name to an expression allowing it to be used multiple times within a module without repeating it.
+Modules:
+A module is a container for multiple resources that are used together.
+Every Terraform configuration has at least one module, known as its root module, which consists of the resources defined in the .tf files in the main working directory.
+Modules are called from within other modules using module blocks
+module "servers" {
+  source = "./app-cluster"
+  servers = 5
+}
+Backends:
+A "backend" in Terraform determines how state is loaded and how an operation such as apply is executed. This abstraction enables non-local file state storage, remote execution, etc
+Terraform enterprise:
+Terraform Enterprise is our self-hosted distribution of Terraform Cloud. It offers enterprises a private instance of the Terraform Cloud application, with no resource limits and with additional enterprise-grade architectural features like audit logging and SAML single sign-on
+ 
+Cloud Compliance and Management:
+ Terraform Enterprise addresses cloud compliance and management with an automation platform that enforces policies within the provisioning workflow to reduce risk through proactive policy enforcement, manage costs, and increase productivity through automation.
+Sentinel Policy as Code:
+ Using Terraform Enterprise, policy owners (security, compliance, audit, finance, operations) use Sentinel policy as code to define policies.  Sentinel policies are then enforced against each Terraform plan prior to executing the provisioning. Because Sentinel offers preventative, proactive policy organizations can confidently instill best practices for production workloads that maintain compliance with necessary regulations.
+Terrafom workflow:
+The core Terraform workflow has three steps:
+1.	Write - Author infrastructure as code.
+2.	Plan - Preview changes before applying.
+3.	Apply - Provision reproducible infrastructure.
+
+ 
+Conclusion:
+As organizations begin to adopt the cloud operating model, they first face the challenge of provisioning cloud infrastructure.  However, Terraform offers a powerful alternative to that legacy model by combining an infrastructure as code approach to provisioning with a policy as code approach to compliance and management. This enables organizations to have both high agility and high control as they develop competency in infrastructure provisioning, compliance and management.  This paper provides an overview of how organizations can leverage Terraform Enterprise to implement multi-cloud compliance and management ensuring effective, unencumbered adoption of the cloud operating model.
